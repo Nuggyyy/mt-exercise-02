@@ -42,3 +42,34 @@ Generate (sample) some text from a trained model with:
     ./scripts/generate.sh
 
 
+
+# Changes Made
+
+## make_virtualenv.sh
+- python3 -> python
+
+## download_data.sh
+- wget -> curl -O
+- changed all "grimm" to "shelley"
+- changed all "tales" to "frankenstein"
+- changed link to the correct .txt file to download
+
+## preprocess.py
+- added nltk.download('punkt_tab')
+
+## train.sh
+- made pytorch use my GPU (device="0"/--cuda)
+- changed "grimm" to "shelley"
+
+## data.py in torch
+- changed the encoding
+
+## main.py in torch
+- changed line 246 model = model.load(f, weights_only=False)
+
+## generate.sh
+- made pytorch use my GPU (device="0"/--cuda)
+- changed "grimm" to "shelley"
+
+## generate.py in torch
+- specified encoding
