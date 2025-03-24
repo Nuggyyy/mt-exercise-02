@@ -62,7 +62,7 @@ Generate (sample) some text from a trained model with:
 - changed "grimm" to "shelley"
 
 ## data.py in torch
-- changed the encoding
+- changed the encoding to latin-1 in line 31 and 38
 
 ## main.py in torch
 - changed line 246 model = model.load(f, weights_only=False)
@@ -72,4 +72,5 @@ Generate (sample) some text from a trained model with:
 - changed "grimm" to "shelley"
 
 ## generate.py in torch
-- specified encoding
+- specified encoding in line 66 to latin-1
+- changed line 55 model = torch.load(f, map_location=device, weights_only=False)
