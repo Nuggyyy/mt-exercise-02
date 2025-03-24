@@ -14,7 +14,7 @@ device="0"
 
 SECONDS=0
 
-dropouts=(0.0, 0.25, 0.5, 0.75, 1.0)
+dropouts=(0.0 0.25 0.5 0.75 1.0)
 
 for dropout in "${dropouts[@]}"; do
     (cd $tools/pytorch-examples/word_language_model &&
@@ -28,3 +28,4 @@ for dropout in "${dropouts[@]}"; do
 
 echo "time taken:"
 echo "$SECONDS seconds"
+done
