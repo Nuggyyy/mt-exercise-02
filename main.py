@@ -7,6 +7,8 @@ import torch
 import torch.nn as nn
 import torch.onnx
 import csv
+import datetime
+import os.path
 
 import data
 import model
@@ -52,9 +54,27 @@ parser.add_argument('--nhead', type=int, default=2,
                     help='the number of heads in the encoder/decoder of the transformer model')
 parser.add_argument('--dry-run', action='store_true',
                     help='verify the code and the model')
-parser.add_argument('--log-file', type=str, default='log.txt',
-                    help='path to save the log file')
+parser.add_argument('--log-file', type=str, default=None,
+                    help='path to save the log file (default: perplexity_dropout_{dropout}.csv)')
 args = parser.parse_args()
+
+# Ensure proper path handling for save and log files
+args.save = os.path.normpath(args.save)  # Normalize path separators
+
+# Create directory for save path if it doesn't exist
+save_dir = os.path.dirname(args.save)
+if save_dir:
+    os.makedirs(save_dir, exist_ok=True)
+
+# Set default log file name if none provided and normalize path
+if args.log_file is None:
+    args.log_file = f'perplexity_dropout_{args.dropout:.1f}.csv'
+args.log_file = os.path.normpath(args.log_file)
+
+# Create directory for log file if it doesn't exist
+log_dir = os.path.dirname(args.log_file)
+if log_dir:
+    os.makedirs(log_dir, exist_ok=True)
 
 # Set the random seed manually for reproducibility.
 torch.manual_seed(args.seed)
@@ -222,14 +242,17 @@ def export_onnx(path, batch_size, seq_len):
 def create_log_file(args):
     """Create and initialize the log file with headers."""
     with open(args.log_file, 'w', newline='') as f:
-        writer = csv.writer(f, delimiter='\t')
-        writer.writerow(['Epoch', 'Split', 'Loss', 'Perplexity'])
+        writer = csv.writer(f, delimiter=',')
+        writer.writerow(['Epoch', 'Train_PPL', 'Valid_PPL', 'Test_PPL'])
 
-def log_metrics(epoch, split, loss, ppl, args):
+def log_metrics(epoch, train_ppl=None, valid_ppl=None, test_ppl=None, args=args):
     """Log metrics to the log file."""
     with open(args.log_file, 'a', newline='') as f:
-        writer = csv.writer(f, delimiter='\t')
-        writer.writerow([epoch, split, loss, ppl])
+        writer = csv.writer(f, delimiter=',')
+        writer.writerow([epoch, train_ppl, valid_ppl, test_ppl])
+
+# Initialize metrics storage
+epoch_metrics = []
 
 # Before the training loop, initialize the log file
 create_log_file(args)
@@ -243,18 +266,19 @@ try:
     for epoch in range(1, args.epochs+1):
         epoch_start_time = time.time()
         
-        # Train and log training metrics
+        # Train
         train_loss = train()
         train_ppl = math.exp(train_loss)
-        log_metrics(epoch, 'train', train_loss, train_ppl, args)
         
-        # Evaluate and log validation metrics
+        # Validate
         val_loss = evaluate(val_data)
         val_ppl = math.exp(val_loss)
-        log_metrics(epoch, 'valid', val_loss, val_ppl, args)
+        
+        # Log metrics for this epoch
+        log_metrics(epoch, train_ppl, val_ppl, None, args)
         
         print('-' * 89)
-        print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
+        print('| epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
                 'valid ppl {:8.2f}'.format(epoch, (time.time() - epoch_start_time),
                                            val_loss, val_ppl))
         print('-' * 89)
@@ -283,7 +307,7 @@ with open(args.save, 'rb') as f:
 # Run on test data and log final metrics
 test_loss = evaluate(test_data)
 test_ppl = math.exp(test_loss)
-log_metrics('final', 'test', test_loss, test_ppl, args)
+log_metrics('final', None, None, test_ppl, args)
 
 print('=' * 89)
 print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
