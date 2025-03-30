@@ -97,5 +97,6 @@ Generate (sample) some text from a trained model with:
     ./scripts/generate_highest.sh
 
 - and
-
-    ./scripts/generate_lowest.sh
+```
+./scripts/generate_lowest.sh
+```
