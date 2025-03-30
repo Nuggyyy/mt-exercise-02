@@ -82,3 +82,7 @@ Generate (sample) some text from a trained model with:
 - when done iterating over the dropout rates, it will then consolidate all the .csv in /metrics into one test.csv, train.csv and valid.csv in the /logs folder
 - then, it will create a line plot for the train and valid perplexities and save it as perplexity_results.png in the /logs folder
 - additionally, all trained models are also available as .pt files in the /models folder
+
+# Commands to run to replicate task 2
+- For the first part about logging and visualising data, you only need to run `./scripts/traintask2.sh`
+- To generate the text from the highest and lowest perplexity models (dropout 1.0 and dropout 0.0 respectively), run `./scripts/generate_highest.sh` and `./scripts/generate_lowest.sh`
