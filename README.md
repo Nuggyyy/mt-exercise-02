@@ -100,3 +100,5 @@ pip install pandas seaborn matplotlib numpy
 ```
 ./scripts/generate_lowest.sh
 ```
+
+- note that the discussion part was added in a separate markdown file called discussion.md
