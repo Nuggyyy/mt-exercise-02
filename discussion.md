@@ -15,7 +15,7 @@
 	- Models with very low dropout (e.g. 0) have low PPL in training and in validation. This shows that the model appearently generalizes well but in our case this might be because of overfitting
 	
 ## Best dropout setting
-In our case the best dropout setting appears to be 0.25 or 0.5.
+In our case the best dropout setting appears to be 0.25 or 0.5. We base our answer on the reasons mentioned above. The dropout rate 0 causes the model to overfit, which can be seen by the mismatch of perplexity between the Training PPL (lowest) and Validation PPL (not lowest). Additionally, a dropout rate of 1 causes the model to never be able to properly learn, which can be seen by both the Training and Validation PPL to be very high. 0.25 and 0.5 both prove that the model is not overfitting by not having the lowest Training PPL, whilst also showing that it actually learned and did not overfit, shown by their Validation PPL score being the lowest.
 
 # Sample Analysis
 ### Highest PPL:
