@@ -1,4 +1,3 @@
-
 # Graph Analysis
 
 ##  Connections between the training, validation and test perplexity
@@ -19,3 +18,19 @@
 In our case the best dropout setting appears to be 0.25 or 0.5.
 
 # Sample Analysis
+### Highest PPL:
+1. General
+	- Very incoherent and has no meaningful structure
+	- There are many unknowns in the sentences but we couldn't come up with words that would make sense to replace them with (probably because of poor generalization or bad training)
+	- Sentences are random with weird punctuation and strange phrases
+	- No consistency in the way phrases are built (e.g. € to rest fatherâ believe œBy)
+2. Interpretation
+	- High test perplexity shows the model's inability to generate coherent and meaningful text. Could be due to overfitting during training leading to poor performance on unseen data
+
+### Lowest PPL:
+1. General
+	- The text is more coherent and structured
+	- Even though there are still many unknowns, the sentences still convey some meaning (e.g. the earth will <unk> my stay  --> the earth will outlast my stay)
+	- Sentences follow a somewhat logical flow, even if they are not perfectly grammatical
+2. Interpretation
+	- Low test perplexity means better generalization and prediction capabilities. While the text isn't perfect, the model still has improved performance in generating
